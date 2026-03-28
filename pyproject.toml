@@ -1,0 +1,15 @@
+[project]
+name = "feast-criteo-mlops"
+version = "0.1.0"
+description = ""
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "datasets>=4.8.2",
+    "feast[aws]==0.61",
+    "ipykernel>=7.2.0",
+    "polars>=1.39.2",
+    "ray[client,data]>=2.54.0",
+    "s3fs>=2024.9.0",
+    "scikit-learn>=1.8.0",
+]

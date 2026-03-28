@@ -1,0 +1,47 @@
+project: feast_criteo
+# better to use sql-based registry to support concurrent writes from multiple clients
+registry: s3://<MY-BUCKET>/feast/registry.pb
+provider: aws
+online_store:
+   type: dynamodb
+   region: us-west-2
+offline_store:
+    type: redshift
+    # cluster_id: <MY-CLUSTER-ID> # use for provisioned redshift cluster
+    workgroup: feast-workgroup # use for serverless redshift
+    region: us-west-2
+    database: dev
+    s3_staging_location: s3://<MY-BUCKET>/feast/criteo/redshift/staging
+    iam_role: arn:aws:iam::<ACCOUNT-ID>:role/RedshiftSpectrumRole
+# Option 2: use ray directly for training data retrieval
+# offline_store:
+#   type: ray
+#   storage_path: s3://MY-BUCKET/feast/criteo/ray/storage
+#   ray_address: "ray://127.0.0.1:10001"
+#   broadcast_join_threshold_mb: 100
+#   max_parallelism_multiplier: 2
+#   target_partition_size_mb: 64
+#   window_size_for_joins: "2H"
+#   enable_distributed_joins: true
+# Ray compute engine for on-demand distributed feature processing
+# batch_engine:
+#     type: ray.engine
+    
+#     # Resource configuration
+#     max_workers: 8                             # Maximum number of Ray workers
+#     max_parallelism_multiplier: 2              # Parallelism as multiple of CPU cores
+    
+#     # Performance optimization
+#     enable_optimization: true                  # Enable performance optimizations
+#     broadcast_join_threshold_mb: 100           # Broadcast join threshold (MB)
+#     target_partition_size_mb: 64               # Target partition size (MB)
+    
+#     # Distributed join configuration
+#     window_size_for_joins: "2H"                # Time window for distributed joins
+#     enable_distributed_joins: true            # Enable distributed joins
+    
+#     # Ray cluster configuration
+#     # ray_address: "ray://ray-compute-engine-head-svc:10001" # if feast runs inside the same k8s namespace
+#     ray_address: "ray://127.0.0.1:10001" # port forward to localhost
+#     staging_location: s3://<MY-BUCKET>/feast/criteo/ray/staging   # Remote staging location for ray compute engine
+entity_key_serialization_version: 3
